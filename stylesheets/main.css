@@ -1,0 +1,249 @@
+@charset "UTF-8";
+/* 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  overflow: hidden;
+}
+body {
+  display: flex;
+  overflow: hidden;
+
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.force-transparent { opacity: 0 !important; }
+.force-hide { display: none !important; }
+.wfc { width: fit-content !important; }
+
+span.key-hint {
+  display: inline-block;
+  margin-left: var(--m);
+  /* padding: var(--p-small) var(--p); */
+  padding: 2px 5px;
+
+  font-weight: 600;
+  color: var(--c-accent);
+  border-radius: var(--r);
+  background-color: var(--c-font);
+}
+
+input[type=text], input[type=number] { height: 44px; }
+label:has(input[type=text]) > input,
+label:has(input[type=number]) > input { height: 24px; }
+select { height: 40px; }
+button { height: max-content; }
+
+.modal .content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--m-medium);
+}
+
+/* 주 영역 */
+#logo {
+  display: flex;
+  align-items: center;
+
+  width: max-content;
+
+  background-color: var(--c-accent);
+}
+#logo > div {
+  width: 52px;
+  height: 52px;
+
+  background: no-repeat center center/32px url("../assets/essentials/logo-black.svg");
+}
+@media (prefers-color-scheme: dark) {
+  #logo > div { background-image: url("../assets/essentials/logo-white.svg"); }
+}
+#logo > span { padding-right: var(--p); }
+
+/* 테마극장 화면 */
+main {
+  display: grid;
+  position: relative;
+  place-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+  z-index: 0;
+
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 76px 306px calc(var(--dialogue-preview-reserve, 35dvh) + 104px) 266px;
+
+  background-color: var(--c-sub);
+}
+@media screen and (max-width: 900px) {
+  main { padding: 76px 8px 55px; }
+}
+
+#pos-layer, #scale-layer {
+  pointer-events: none;
+}
+
+#photozone {
+  width: 1280px;
+  height: 720px;
+
+  background-color: black;
+}
+
+/* 색상 선택기 요소 */
+.colorpicker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--m);
+
+  width: 100%;
+  height: max-content;
+}
+.colorpicker-preview {
+  display: flex;
+  position: relative;
+  align-items: flex-end;
+  justify-content: center;
+
+  width: 100%;
+  height: 100px;
+
+  border: solid 3px var(--c-accent);
+  border-radius: var(--r-small);
+  background-color: var(--c-accent);
+}
+.colorpicker-preview-value {
+  padding: 0 4px;
+
+  width: 100%;
+
+  background-color: var(--c-main);
+}
+.colorpicker > .right {
+  display: grid;
+  grid-template-columns: minmax(0, auto) calc(100% - 120px) 80px;
+  grid-template-rows: 48px 48px 48px;
+  row-gap: 3px;
+
+  flex: 1;
+  width: 100%;
+  height: 150px;
+}
+.colorpicker > .right > p {
+  line-height: 48px;
+
+  font-weight: 900;
+  text-align: center;
+
+  color: var(--c-font);
+  border-radius: var(--r-small) 0 0 var(--r-small);
+  background-color: var(--c-main);
+}
+.colorpicker > .right > .colorpicker-range {
+  width: 100%;
+  height: 100%;
+
+  background-color: transparent;
+}
+.colorpicker > .right > .colorpicker-r-revamped > .rail > .gauge { background-color: rgb(255, 0, 0); }
+.colorpicker > .right > .colorpicker-g-revamped > .rail > .gauge { background-color: rgb(0, 200, 0); }
+.colorpicker > .right > .colorpicker-b-revamped > .rail > .gauge { background-color: rgb(0, 0, 255); }
+.colorpicker-bar {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+}
+.colorpicker-bar > div {
+  position: relative;
+
+  width: calc(100% - 20px);
+  height: 100%;
+}
+.colorpicker-bar-r {
+  background-image: linear-gradient(90deg, rgb(0, 0, 0), rgb(255, 0, 0));
+}
+.colorpicker-bar-g {
+  background-image: linear-gradient(90deg, rgb(0, 0, 0), rgb(0, 255, 0));
+}
+.colorpicker-bar-b {
+  background-image: linear-gradient(90deg, rgb(0, 0, 0), rgb(0, 0, 255));
+}
+.colorpicker-pointer {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 20px;
+  height: 100%;
+
+  border: solid 2px var(--c-border);
+  background-color: var(--c-main);
+  cursor: ew-resize;
+}
+.colorpicker-pointer:active {
+  outline: solid 2px var(--c-accent);
+}
+.colorpicker-area > .right > input[type=number] {
+  width: 100%;
+  height: 100%;
+
+  border-radius: var(--r-small);
+}
+
+.menu > .wrap:has(.colorpicker-range:active) { overflow-y: hidden; }
+
+/* 다운로드 경고창 */
+.alert {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  z-index: 101;
+
+  width: 100vw;
+  height: 100vh;
+
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.alert > * {
+  color: white;
+}
+
+/* 수정 감지 오류 */
+#parity-check-failed {
+  display: grid;
+  position: relative;
+  place-items: center;
+  padding: 20px;
+  
+  width: 100dvw;
+  height: 100dvh;
+
+  background-color: var(--c-main);
+}
+#parity-check-failed > .wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: hidden;
+
+  max-width: 100%;
+  max-height: 100%;
+  width: 800px;
+}
+
+@media screen and (max-width: 700px) {
+  /* 초기화 */
+  body { flex-direction: column-reverse; }
+}
+
+#window-test > .body > .contents { padding: var(--p); }

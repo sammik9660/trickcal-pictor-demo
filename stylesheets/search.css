@@ -1,0 +1,118 @@
+@charset "UTF-8";
+/* 검색 바 */
+#search-area {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 20%;
+  padding: var(--p);
+  gap: var(--p);
+  z-index: 103;
+
+  width: 100dvw;
+  height: max-content;
+
+  pointer-events: none;
+}
+
+#search {
+  display: grid;
+  grid-template-columns: 36px minmax(0, auto);
+  padding: 20px 24px;
+  place-items: center;
+  gap: var(--p);
+
+  max-width: calc(100dvw - var(--p) * 2);
+  width: 660px;
+  height: max-content;
+
+  border: solid 1px var(--c-border);
+  /* border-radius: var(--r-medium); */
+  border-radius: 43px;
+  /* background-color: var(--c-main); */
+  background: oklch(from var(--c-main) l c h/0.9);
+  box-shadow: var(--op-menu-shadow);
+  backdrop-filter: blur(30px);
+  pointer-events: auto;
+}
+
+#input-search {
+  padding: 0 var(--p);
+
+  width: 100%;
+
+  font-size: 18pt;
+  border-radius: unset;
+  background-color: transparent;
+}
+#input-search:focus { outline: unset; }
+
+#search > .il { pointer-events: none; }
+
+/* 검색 결과 목록 */
+#search-result-list {
+  flex-direction: column;
+  padding: 20px;
+
+  max-width: calc(100dvw - var(--p) * 2);
+  width: 660px;
+  height: max-content;
+
+  border: solid 1px var(--c-border);
+  border-radius: var(--r-medium);
+  background-color: var(--c-main);
+  pointer-events: auto;
+}
+
+#search-result-list > .desc {
+  margin-bottom: var(--m);
+
+  font-style: italic;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+#search-result-list > .slist {
+  overflow-y: scroll;
+
+  max-height: 200px;
+  width: 100%;
+  height: max-content;
+}
+
+#search-result-list > .slist > .item {
+  flex-direction: column;
+  align-items: flex-start;
+
+  width: 100%;
+
+  text-align: left;
+  border: solid 1px var(--c-border);
+  border-radius: unset;
+  background-color: transparent;
+}
+#search-result-list > .slist > .item:not(:last-child) { border-bottom: unset; }
+#search-result-list > .slist > .item:focus { outline: unset; }
+#search-result-list > .slist > .item::before { content: none; }
+
+#search-result-list > .slist > .item:focus { background-color: var(--c-accent); }
+
+@media screen and (max-width: 700px) {
+  #search-area { top: 0; }
+
+  #search {
+    grid-template-columns: 24px minmax(0, auto);
+    padding: 10px 20px;
+
+    border-radius: 33px;
+  }
+  #search > .il {
+    width: 24px;
+    height: 24px;
+
+    background-size: 24px;
+  }
+  #input-search { font-size: 14pt; }
+}

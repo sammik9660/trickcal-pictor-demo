@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>트릭컬 테마극장 생성기</title>
+  <link rel="shortcut icon" href="./assets/essentials/favicon.svg" type="image/x-icon">
+  <link rel="manifest" href="./manifest.json" crossorigin="use-credentials">
+  <meta property="og:title" content="트릭컬 테마극장 생성기">
+  <meta id="desc" property="og:description" content="모바일 게임 '트릭컬: 리바이브'의 인게임 스토리(테마극장)에서의 대화창 및 CG 씬과 유사한 규격의 이미지를 쉽게 제작하도록 돕는 웹기반 어플리케이션입니다.">
+
+  <link rel="stylesheet" href="./stylesheets/renew/all.css">
+
+  <link rel="stylesheet" href="./lyra/lyra-styles.css">
+  <link rel="stylesheet" href="./stylesheets/palette.css">
+  <link rel="stylesheet" href="./stylesheets/main.css">
+  <link rel="stylesheet" href="./stylesheets/photozone.css?v=20261031-profile-crop">
+  <link rel="stylesheet" href="./stylesheets/objects.css">
+  <link rel="stylesheet" href="./stylesheets/search.css">
+  <link rel="stylesheet" href="./stylesheets/quick-input.css">
+  <link rel="stylesheet" href="./stylesheets/splash.css">
+  <link rel="stylesheet" href="./stylesheets/misc.css">
+  <link rel="stylesheet" href="./stylesheets/menu.css?v=20261015-expression-library">
+  <link rel="stylesheet" href="./stylesheets/resource-gallery.css">
+  <link rel="stylesheet" href="./stylesheets/context-menu.css">
+  <link rel="stylesheet" href="./stylesheets/drop.css">
+
+  <link rel="stylesheet" href="./stylesheets/monat-icons/lyra-icons-master.css">
+  <style>:root { --icon: var(--c-font); }</style>
+
+  <script src="./scripts/html2canvas-pro.min.js"></script>
+  
+  <script type="module" src="./lyra/lyra-style-init.js"></script>
+  <script type="module" src="./scripts/pictor.js?v=20261101-sprite-darkness" defer></script>
+  <script type="module" src="./scripts/pictor-vnext.js" defer></script>
+</head>
+<body>
+  <input type="file" id="uploader" class="force-hide" autocomplete="off">
+  <input type="file" name="bg-uploader" id="bg-uploader" class="force-hide" accept="image/*" autocomplete="off">
+  <input type="file" name="image-uploader" id="image-uploader" class="force-hide" accept="image/*" multiple autocomplete="off">
+  <input type="file" name="image-fetcher" id="image-fetcher" class="force-hide" accept="image/*" autocomplete="off">
+  <input type="file" name="profile-uploader" id="profile-uploader" class="force-hide" accept="image/*" autocomplete="off">
+  <input type="file" name="project-uploader" id="project-uploader" class="force-hide" accept="application/json" autocomplete="off">
+
+  <div id="menu-area">
+    <div id="menuzone" style="display: none;">
+      <div class="wrap">
+        <div id="menu-config" class="menu">
+          <div class="title">
+            <h2>설정</h2>
+            <button class="close"><div class="i i-deny"></div></button>
+          </div>
+          <div class="wrap">
+            <label class="wf f1 menu-title">
+              <input type="checkbox" id="checkbox-toggle-watermark" class="common-option-toggle" data-connected-option="toggleWatermark" autocomplete="off">
+              <h4>워터마크</h4>
+              <div class="toggle"></div>
+            </label>
+            <label class="wf f1">
+              <p>내용</p>
+              <input type="text" id="input-watermark" class="wf f1 common-option-input" data-connected-option="watermarkString" autocomplete="off">
+            </label>
+            <div class="list-row wf">
+              <p>위치</p>
+              <select id="select-watermark-position" class="wf f1 common-option-input" data-connected-option="watermarkPosition" autocomplete="off">
+                <option value="0">좌상단</option>
+                <option value="1">중앙</option>
+              </select>
+            </div>
+            <div class="divline-row"></div>
+            <h4>설정 관리</h4>
+            <div class="list-row wf">
+              <button id="button-save-common-option" class="f1 fjcc"><div class="i i-export"></div><p>저장</p></button>
+              <button id="button-reset-common-option" class="f1 fjcc"><div class="i i-trash"></div><p>초기화</p></button>
+            </div>
+            <p>설정은 브라우저에 자동으로 저장됩니다.</p>
+            <div class="divline-row"></div>
+            <h4>파일 선택 시작 폴더</h4>
+            <p>폴더를 한 번 지정하면 다음 파일 선택이 해당 폴더에서 시작합니다. 설정은 이 브라우저에 저장됩니다.</p>
+            <div class="list-row wf">
+              <span>배경</span><span id="picker-directory-background-name" class="f1">기본 위치</span>
+              <button id="button-picker-directory-background" type="button">폴더 지정</button>
+              <button id="button-picker-directory-background-clear" type="button" title="기억한 폴더 해제">해제</button>
+            </div>
+            <div class="list-row wf">
+              <span>사도·이미지</span><span id="picker-directory-sprite-name" class="f1">기본 위치</span>
+              <button id="button-picker-directory-sprite" type="button">폴더 지정</button>
+              <button id="button-picker-directory-sprite-clear" type="button" title="기억한 폴더 해제">해제</button>
+            </div>
+            <div class="list-row wf">
+              <span>프로젝트</span><span id="picker-directory-project-name" class="f1">기본 위치</span>
+              <button id="button-picker-directory-project" type="button">폴더 지정</button>
+              <button id="button-picker-directory-project-clear" type="button" title="기억한 폴더 해제">해제</button>
+            </div>
+          </div>
+        </div>
+        <div id="menu-doc" class="menu">
+          <div class="title">
+            <h2>문서 및 출력</h2>
+            <button class="close"><div class="i i-deny"></div></button>
+          </div>
+          <div class="wrap">
+            <h4>문서</h4>
+            <label class="wf f1">
+              <p>제목</p>
+              <input type="text" id="show-name" class="wf f1" value="">
+            </label>
+            <div class="list-row wf">
+              <button id="button-save-file" class="f1 fjcc"><div class="i i-save"></div><p>저장</p></button>
+              <button id="button-open-file" class="f1 fjcc"><div class="i i-open"></div><p>불러오기</p></button>
+            </div>
+            <div id="container-save-on-browser" class="list-column wf fais" style="display:none;">
+              <div class="divline-row"></div>
+              <h4>브라우저에 저장</h4>
+              <div class="list-row wf">
+                <button id="button-save" class="f1 fjcc">
+                  <div class="i i-export"></div>
+                  <p>저장</p>
+                </button>
+                <button id="button-load" class="f1 fjcc">
+                  <div class="i i-import"></div>
+                  <p>불러오기</p>
+                </button>
+              </div>
+            </div>
+            <div class="divline-row"></div>
+            <h4>PNG 이미지로 저장</h4>
+            <div class="list-row wf">
+              <button id="button-download" class="f1 fjcc">
+                <div class="i i-download"></div>
+                <p>현재 슬라이드 저장<span class="key-hint">K</span></p>
+              </button>
+              <button id="button-download-all" class="f1 fjcc">
+                <div class="i i-download"></div>
+                <p>전체 슬라이드 저장<span class="key-hint">L</span></p>
+              </button>
+            </div>
+            <button id="button-download-all-zip" class="wf fjcc" type="button">
+              <div class="i i-download"></div>
+              <p>전체 슬라이드 ZIP 저장 · 빠른 출력</p>
+            </button>
+            <p>ZIP 출력은 고정 대기 없이 슬라이드를 렌더링합니다. PNG는 재압축하지 않아 화질을 유지합니다.</p>
+            <div class="divline-row"></div>
+            <h4>출력 배율 설정</h4>
+            <label class="wf f1">
+              <div class="i i-config"></div>
+              <p>배율</p>
+              <input type="number" id="export-multiplier" class="wf f1">
+            </label>
+            <label class="wf f1">
+              <div class="i i-slide-size"></div>
+              <p>크기</p>
+              <input type="text" id="export-size-onmodal" class="wf f1" disabled>
+            </label>
+            <p>출력 배율을 과도하게 큰 값으로 설정할 경우 브라우저 또는 기기의 작동 중지나 데이터 손실을 일으킬 수 있습니다.</p>
+          </div>
+        </div>
+        <div id="menu-slide" class="menu">
+          <div class="title">
+            <h2>슬라이드</h2>
+            <button class="close"><div class="i i-deny"></div></button>
+          </div>
+          <div class="wrap">
+            <h4>크기 조정</h4>
+            <div class="list-row wf">
+              <input type="number" id="input-slide-size-width" class="wf f1"><span>×</span><input type="number" id="input-slide-size-height" class="wf f1">
+            </div>
+            <button id="button-fit-to-bg-size" class="wf fjcc"><div class="i i-slide-size"></div>배경 이미지 비율에 맞춤</button>
+            <button id="button-modal-slide-size-preset" class="wf fjcc"><div class="i i-config"></div><p>크기 프리셋</p></button>
+            <button id="button-apply-slide-size-all" class="wf fjcc" type="button" title="현재 슬라이드의 가로·세로 크기를 모든 슬라이드에 적용"><div class="i i-slide-size"></div><p>현재 크기를 모든 슬라이드에 적용</p></button>
+            <div class="divline-row"></div>
+            <h4>목록</h4>
+            <div class="list-row wf">
+              <button id="button-add-slide" class="f1 fjcc"><div class="i i-create-slide"></div><p>빈 슬라이드 추가</p></button>
+            </div>
+            <div class="list-row wf">
+              <button id="button-move-slide-up" class="f1 fjcc" type="button" title="선택 슬라이드를 위로 이동"><span aria-hidden="true">↑</span><p>위로</p></button>
+              <button id="button-move-slide-down" class="f1 fjcc" type="button" title="선택 슬라이드를 아래로 이동"><span aria-hidden="true">↓</span><p>아래로</p></button>
+            </div>
+            <label style="display:none;" lyra-tip="썸네일 자동 생성 및 새로고침 기능을 비활성화합니다.<br>사이트가 느리게 동작하는 문제를 해결할 수 있습니다.<br>체크를 해제한 후에 썸네일을 다시 생성해야할 수 있습니다.">
+              <input type="checkbox" id="checkbox-disable-thumbnail-gen">
+              썸네일 생성 비활성화
+            </label>
+            <div id="slide-list">
+            </div>
+          </div>
+        </div>
+        <div id="menu-elements" class="menu">
+          <div class="title">
+            <h2>배경 및 요소</h2>
+            <button class="close"><div class="i i-deny"></div></button>
+          </div>
+          <div class="wrap">
+            <label class="wf menu-title"><input type="checkbox" id="checkbox-bg-image" autocomplete="off" checked><h4>배경 이미지 표시</h4><div class="toggle"></div></label>
+            <div class="list-row wf">
+              <button id="button-set-bg" class="f1 fjcc"><div class="i ii-image"></div><p>이미지 설정</p></button>
+              <button id="button-remove-bg" class="f1 fjcc"><div class="i i-trash"></div><p>이미지 제거</p></button>
+            </div>
+            <div class="list-row wf">
+              <button id="button-modal-colorpicker-bg" class="f1 fjcc"><div class="i i-palette"></div><p>배경 색상</p></button>
+              <button id="button-modal-colorpicker-overlay" class="f1 fjcc"><div class="i i-palette"></div><p>오버레이 색상</p></button>
+            </div>
+            <div class="list-row wf">
+              <p>맞춤</p>
+              <select id="select-bg-fit" class="wf f1">
+                <option value="align-center">중앙 배치</option>
+                <option value="fit-height">슬라이드 높이에 맞춤</option>
+                <option value="fit-width">슬라이드 폭에 맞춤</option>
+                <option value="fill">슬라이드 채움</option>
+              </select>
+            </div>
+            <div class="divline-row"></div>
+            <label class="wf menu-title"><input type="checkbox" id="checkbox-border-vignetting" autocomplete="off" checked><h4>배경 모서리 비네팅</h4><div class="toggle"></div></label>
+            <label class="wf"><input type="checkbox" id="checkbox-border-vignetting-horizontal" autocomplete="off" checked><p>상하 비네팅</p><div class="toggle"></div></label>
+            <label class="wf"><input type="checkbox" id="checkbox-border-vignetting-vertical" autocomplete="off" checked><p>좌우 비네팅</p><div class="toggle"></div></label>
+            <div class="divline-row"></div>
+            <label class="wf menu-title">
+                <input type="checkbox" id="checkbox-toggle-select">
+                <h4>선택지</h4>
+                <div class="toggle"></div>
+            </label>
+            <div class="list-row wf">
+              <label class="f1"><p>1</p><input type="text" id="select-option-0" class="select-option modal-input-text wf f1"></label>
+              <button class="button-download-select" data-target="0"><div class="i i-download"></div></button>
+            </div>
+            <div class="list-row wf">
+              <label class="f1"><p>2</p><input type="text" id="select-option-1" class="select-option modal-input-text wf f1"></label>
+              <button class="button-download-select" data-target="1"><div class="i i-download"></div></button>
+            </div>
+            <div class="list-row wf">
+              <label class="f1"><p>3</p><input type="text" id="select-option-2" class="select-option modal-input-text wf f1"></label>
+              <button class="button-download-select" data-target="2"><div class="i i-download"></div></button>
+            </div>
+            <div class="list-column content-type-1 wf fais">
+              <div class="list-row wf">
+                <p>테마</p>
+                <select id="select-select-theme" class="f1">
+                  <option value="0">기본형</option>
+                  <option value="1">대화형</option>
+                </select>
+              </div>
+            </div>
+            <div class="divline-row"></div>
+            <label id="toggle-title" class="wf menu-title">
+                <input type="checkbox" id="checkbox-toggle-title">
+                <h4>제목 표시기</h4>
+                <div class="toggle"></div>
+            </label>
+            <label class="f1 wf">
+                <p>제목</p>
+                <input type="text" id="input-title-name" class="f1 wf">
+            </label>
+            <label class="f1 wf">
+                <p>내용</p>
+                <input type="text" id="input-title-content" class="f1 wf">
+            </label>
+            <div class="divline-row"></div>
+            <label id="toggle-location" class="wf menu-title">
+              <input type="checkbox" id="checkbox-toggle-location">
+              <h4>위치 표기시</h4>
+              <div class="toggle"></div>
+            </label>
+            <label class="f1 wf">
+              <p>위치</p>
+              <input type="text" id="input-location" class="f1 wf">
+            </label>
+            <div class="divline-row"></div>
+            <label id="toggle-photo-button" class="wf menu-title">
+              <input type="checkbox" id="checkbox-toggle-photo-button">
+              <h4>조작 버튼</h4>
+              <div class="toggle"></div>
+            </label>
+          </div>
+        </div>
+        <div id="menu-scriptbox" class="menu">
+          <div id="scriptbox-resize-handle" role="separator" aria-label="대화창 패널 높이 조절" aria-orientation="horizontal" tabindex="0"></div>
+          <div class="title">
+            <h2>대화창</h2>
+            <button class="close"><div class="i i-deny"></div></button>
+          </div>
+          <div class="wrap">
+            <div class="scriptbox-controls">
+            <label class="wf f1">
+              <input type="checkbox" id="checkbox-toggle-content">
+              <h4>표시</h4>
+              <div class="toggle"></div>
+            </label>
+            <button id="button-download-script-box" class="wf fjcc">
+              <div class="i i-download"></div>
+              <p>PNG로 저장(대화창)</p>
+            </button>
+            <div class="divline-row"></div>
+            <div id="container-script-box-type" class="list-column wf fais" style="display:none;">
+              <h4>대화창 모드</h4>
+              <div id="script-box-type" class="list listbox wf">
+                  <div class="list-column wf">
+                      <label class="wf fjcs">
+                          <input type="radio" name="script-box-type" value="0">
+                          구형: 구 테마극장 스타일
+                      </label>
+                      <label class="wf fjcs">
+                          <input type="radio" name="script-box-type" value="1">
+                          신규: 개편 업데이트 이후 테마극장 스타일
+                      </label>
+                  </div>
+              </div>
+              <div class="divline-row"></div>
+            </div>
+            </div>
+            <div class="scriptbox-edit-grid">
+              <section class="scriptbox-name-settings">
+            <label class="wf menu-title">
+              <input type="checkbox" id="checkbox-toggle-namearea">
+              <h4>이름표</h4>
+              <div class="toggle"></div>
+            </label>
+            <div class="list-row wf">
+              <label class="wf f1">
+                <p>이름</p>
+                <input type="text" id="input-name" class="wf f1">
+              </label>
+              <button class="button-color-preset" class="wfc fjcc"><div class="i i-palette"></div><p>사도 색상표</p></button>
+            </div>
+            <button id="button-modal-colorpicker-namearea" class="wf fjcc"><div class="i i-palette"></div><p>이름표 색상</p></button>
+            <div class="list-row content-type-1 wf">
+              <p>위치</p>
+              <select id="select-namearea-position" class="f1">
+                <option value="0">좌측</option>
+                <option value="1">중앙</option>
+                <option value="2">우측</option>
+              </select>
+            </div>
+            <div class="list-row content-type-1 wf">
+              <p>감정</p>
+              <select id="select-namearea-emotion" class="f1">
+                <option value="none">없음</option>
+                <option value="surprise">느낌표</option>
+                <option value="question">물음표</option>
+                <option value="surprise2">들뜸</option>
+                <option value="startle">놀람</option>
+                <option value="sparkle">반짝</option>
+                <option value="angry">화남</option>
+                <option value="stun">충격</option>
+                <option value="sweat">땀</option>
+                <option value="dizzy">어지러움</option>
+                <option value="star">별</option>
+                <option value="silence">침묵</option>
+                <option value="embarrassed">당황</option>
+                <option value="sigh">한숨</option>
+                <option value="panic">공황</option>
+                <option value="disappoint">실망</option>
+                <option value="idea">아이디어</option>
+              </select>
+            </div>
+            <div class="divline-row"></div>
+              </section>
+              <section class="scriptbox-content-settings">
+            <h4>내용</h4>
+            <label class="wf" title="직접 입력한 마침표 세 개를 ⋯로 바꿉니다.">
+              <input type="checkbox" id="checkbox-auto-ellipsis" autocomplete="off">
+              <p>... → ⋯ 자동 변환</p>
+              <div class="toggle"></div>
+            </label>
+            <textarea id="input-content" class="input-content wf"></textarea>
+            <button class="button-markdown-help wfc fjcc"><div class="i i-notification"></div><p>마크다운 문법 도움말</p></button>
+            <div class="divline-row"></div>
+              </section>
+              <section class="scriptbox-style-settings">
+            <h4>형태</h4>
+            <div class="list-column content-type-0 wf">
+              <div id="script-box-position" class="list-column listbox wf f1 fais">
+                <h4>위치</h4>
+                <div class="list-row wf f1 fjcb">
+                  <label><input type="radio" name="script-box-position" value="0">↖</label>
+                  <label><input type="radio" name="script-box-position" value="1">↑</label>
+                  <label><input type="radio" name="script-box-position" value="2">↗</label>
+                </div>
+                <div class="list-row wf f1 fjcb">
+                  <label><input type="radio" name="script-box-position" value="3">←</label>
+                  <label><input type="radio" name="script-box-position" value="4">Ｃ</label>
+                  <label><input type="radio" name="script-box-position" value="5">→</label>
+                </div>
+                <div class="list-row wf f1 fjcb">
+                  <label><input type="radio" name="script-box-position" value="6">↙</label>
+                  <label><input type="radio" name="script-box-position" value="7">↓</label>
+                  <label><input type="radio" name="script-box-position" value="8">↘</label>
+                </div>
+              </div>
+              <div class="list-column wf hf f1">
+                <div id="script-box-style" class="list-column listbox wf fais">
+                  <h4>모양</h4>
+                  <div class="list-row wf">
+                    <label class="f1"><input type="radio" name="script-box-style" value="0">기본</label>
+                    <label class="f1"><input type="radio" name="script-box-style" value="1">생각</label>
+                    <label class="f1"><input type="radio" name="script-box-style" value="2">놀람</label>
+                    <label class="f1"><input type="radio" name="script-box-style" value="3">사각형</label>
+                  </div>
+                </div>
+                <div id="script-sokmaeum-style" class="list-column listbox wf fais">
+                  <h4>속마음</h4>
+                  <div class="list-row wf">
+                    <label class="f1"><input type="radio" name="script-sokmaeum-style" value="0">없음</label>
+                    <label class="f1"><input type="radio" name="script-sokmaeum-style" value="1">있음</label>
+                    <label class="f1"><input type="radio" name="script-sokmaeum-style" value="2">활성화</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="list-row content-type-1 wf">
+              <p>테마</p>
+              <select id="select-scriptbox-theme" class="f1"></select>
+            </div>
+            <div class="list-row content-type-1 wf">
+              <p>투명도</p>
+              <label class="wf f1">
+                <input type="range" id="range-scriptbox-opacity" min="0" max="100" step="10" value="100" autocomplete="off">
+              </label>
+            </div>
+            <div class="list-column content-type-1 for-profile-theme wf fais">
+              <div class="divline-row"></div>
+              <h4>프로필 사진</h4>
+              <div class="list-row wf">
+                <button id="button-set-profile" class="f1 fjcc"><div class="i ii-image"></div><p>이미지 설정</p></button>
+                <button id="button-unset-profile" class="fjcc"><div class="i i-counter-clockwise"></div></button>
+              </div>
+              <div class="list-row wf">
+                <p>형태</p>
+                <select id="select-profile-overflow-cut" class="f1" value="0" autocomplete="off">
+                  <option value="0">원형으로 자르기</option>
+                  <option value="1">하단만 원형으로 자르기</option>
+                  <option value="2">상단만 원형으로 자르기</option>
+                  <option value="3">좌측만 원형으로 자르기</option>
+                  <option value="4">우측만 원형으로 자르기</option>
+                  <option value="5">자르지 않음</option>
+                </select>
+              </div>
+              <button id="button-profile-reset-framing" type="button" class="wf fjcc">게임 구도 복원</button>
+              <details class="wf">
+                <summary>프로필 구도 세부 조절</summary>
+                <label class="list-row wf"><p>확대 <output id="profile-zoom-value">250%</output></p><input id="input-profile-zoom" class="f1" type="range" min="100" max="400" value="250"></label>
+                <label class="list-row wf"><p>가로 위치</p><input id="input-profile-offset-x" class="f1" type="range" min="-100" max="100" value="0"></label>
+                <label class="list-row wf"><p>세로 위치</p><input id="input-profile-offset-y" class="f1" type="range" min="-100" max="100" value="40"></label>
+                <label class="list-row wf"><p>좌우반전</p><input id="input-profile-flip" type="checkbox" checked></label>
+              </details>
+            </div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div id="menu-object" class="menu">
+          <div class="title">
+            <h2>개체</h2>
+            <button class="close"><div class="i i-deny"></div></button>
+          </div>
+          <div class="wrap">
+            <!-- <h4>개체</h4> -->
+            <div class="list-row wf">
+              <button class="button-resource-gallery f1 fjcc"><i class="gallery"></i><p>리소스 갤러리</p></button>
+              <button id="button-reset-image" class=""><div class="i i-trash"></div></button>
+            </div>
+            <div class="list-row wf">
+              <button id="button-add-image" class="f1 fjcc"><div class="i ii-image"></div><p>사진</p></button>
+              <button id="button-add-dialogue" class="f1 fjcc"><div class="i ii-dialogue"></div><p>말풍선</p></button>
+              <button id="button-add-sticker" class="f1 fjcc"><div class="i ii-sticker"></div><p>스티커</p></button>
+            </div>
+            <div id="image-item-list">
+            </div>
+            <div id="object-property-tools" aria-label="선택 개체 편집 도구"></div>
+          </div>
+        </div>
+        <div id="menu-about" class="menu">
+          <div class="title">
+            <h2>앱 정보</h2>
+            <button class="close"><div class="i i-deny"></div></button>
+          </div>
+          <div class="wrap">
+            <img src="./assets/essentials/banner.svg" alt="Project Pictor" class="about-thumbnail">
+            <p class="about-app"></p><br>
+            <p class="about-lyra"></p><br>
+            <p class="about-desc"></p><br>
+            <p>Acherium 제작, "클뜯 요소" 없음&trade;.</p><br>
+            <p>'트릭컬: 리바이브(Trickcal RE:VIVE)'는 ㈜에피드게임즈의 상표입니다.</p><br>
+            <div class="divline-row"></div>
+            <p>관련 링크</p>
+            <a class="regulation-link" target="_blank">트릭컬: 리바이브 2차 창작물 활용 범위에 대한 안내</a><br>
+            <a href="https://github.com/acherium" target="_blank">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="sidezone">
+      <!-- <div id="top-menu" class="float-menu"> -->
+        <!-- <button class="toggle-menu toggle-menu-about logo" data-menu="menu-about" data-menu-tip="앱 정보" data-menu-shortcut="H"></button> -->
+      <!-- </div> -->
+    </div>
+  </div>
+  <section id="cast-dock" aria-label="현재 등장 사도">
+    <button id="cast-dock-toggle" type="button" aria-expanded="true">사도 ▴</button>
+    <button id="button-add-sprite" type="button" aria-label="사도 추가">＋ 사도 추가</button>
+    <div id="cast-dock-list"></div>
+  </section>
+  <div id="float-menu-area">
+    <div class="tip-row">
+      <p class="tip"></p>
+    </div>
+    <div class="row">
+      <div class="wrap">
+        <div id="moveto-bar" class="float-menu">
+          <button id="button-controller-moveto-horizontal-left" data-menu-tip="수평 좌측에 맞춤"><div class="i i-align-horizontal-left"></div></button>
+          <button id="button-controller-moveto-horizontal-center" data-menu-tip="수평 중앙에 맞춤"><div class="i i-align-horizontal-center"></div></button>
+          <button id="button-controller-moveto-horizontal-right" data-menu-tip="수평 우측에 맞춤"><div class="i i-align-horizontal-right"></div></button>
+          <div class="partition"></div>
+          <button id="button-controller-moveto-vertical-top" data-menu-tip="수직 상단에 맞춤"><div class="i i-align-vertical-top"></div></button>
+          <button id="button-controller-moveto-vertical-middle" data-menu-tip="수직 중앙에 맞춤"><div class="i i-align-vertical-middle"></div></button>
+          <button id="button-controller-moveto-vertical-bottom" data-menu-tip="수직 하단에 맞춤"><div class="i i-align-vertical-bottom"></div></button>
+          <div class="partition"></div>
+          <button id="button-controller-moveto-center" data-menu-tip="슬라이드 중앙에 맞춤"><div class="i i-align-center"></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="wrap">
+        <div id="controller-bar" class="float-menu">
+          <button id="button-controller-bottommost" data-menu-tip="맨 아래로"><div class="i i-bottommost"></div></button>
+          <button id="button-controller-bottom" data-menu-tip="아래로"><div class="i i-bottom"></div></button>
+          <button id="button-controller-front" data-menu-tip="위로"><div class="i i-front"></div></button>
+          <button id="button-controller-frontmost" data-menu-tip="맨 위로"><div class="i i-frontmost"></div></button>
+          <div class="partition"></div>
+          <button id="button-controller-flip-horizontal" data-menu-tip="좌우 반전"><div class="i i-flip-horizontal"></div></button>
+          <button id="button-controller-flip-vertical" data-menu-tip="상하 반전"><div class="i i-flip-vertical"></div></button>
+          <input type="checkbox" id="checkbox-toggle-controller-darker">
+          <button id="controller-toggle-darker" data-menu-tip="어둡게" style="display:none;"><div class="i i-invert"></div></button>
+          <div class="partition"></div>
+          <button id="button-controller-reset" data-menu-tip="위치 및 크기 초기화"><div class="i i-rescue"></div></button>
+          <button id="button-controller-restore-aspect" data-menu-tip="원본 비율 복원 · 모든 크기 핸들 비율 고정 (Shift: 해제)" aria-label="원본 비율 복원 (비율 고정)" style="display:none"><span class="aspect-lock-icon" aria-hidden="true">🔒</span><span>원본 비율 복원</span></button>
+          <button id="button-controller-remove" data-menu-tip="삭제"><div class="i i-trash"></div></button>
+          <div class="partition"></div>
+          <button id="button-controller-unselect" data-menu-tip="선택 해제" data-menu-shortcut="ESC"><div class="i i-deny"></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="wrap">
+        <div id="menu-main" class="float-menu">
+          <div>
+            <button id="button-about" class="logo" data-tooltip="앱 정보 <span>H</span>"></button>
+            <button id="button-save-file-onmenu" data-tooltip="저장"><div class="i i-save"></div></button>
+            <button id="button-open-file-onmenu" data-tooltip="불러오기"><div class="i i-open"></div></button>
+            <div class="partition"></div>
+            <button id="button-undo" type="button" disabled data-tooltip="실행 취소 <span>Ctrl+Z</span>" aria-label="실행 취소"><i class="undo"></i></button>
+            <button id="button-redo" type="button" disabled data-tooltip="다시 실행 <span>Ctrl+Y</span>" aria-label="다시 실행"><i class="redo"></i></button>
+            <div class="partition"></div>
+          </div>
+          <div>
+            <button class="button-search" data-tooltip="대사 검색 <span>Space</span>"><i class="search"></i></button>
+            <button class="button-download-onmenu" data-tooltip="현재 슬라이드 저장 <span>K</span>"><div class="i i-download"></div></button>
+            <div class="partition"></div>
+            <button class="toggle-menu toggle-menu-doc" data-menu="menu-doc" data-tooltip="문서 및 출력 <span>A</span>"><div class="i i-document"></div></button>
+            <button class="toggle-menu toggle-menu-slide" data-menu="menu-slide" data-tooltip="슬라이드 <span>S</span>"><div class="i i-slide"></div></button>
+            <button class="toggle-menu toggle-menu-scriptbox" data-menu="menu-scriptbox" data-tooltip="대화창 <span>D</span>"><div class="i i-dialogue"></div></button>
+            <button class="toggle-menu toggle-menu-elements" data-menu="menu-elements" data-tooltip="배경 및 요소 <span>F</span>"><div class="i i-star5"></div></button>
+            <button class="toggle-menu toggle-menu-object" data-menu="menu-object" data-tooltip="개체 <span>G</span>"><div class="i i-layer"></div></button>
+          </div>
+          <div>
+            <div class="partition"></div>
+            <button class="button-resource-gallery" data-tooltip="리소스 갤러리 <span>/</span>"><i class="gallery"></i></button>
+            <button class="toggle-menu toggle-menu-config" data-menu="menu-config" data-tooltip="설정 <span>Delete</span>"><div class="i i-config"></div></button>
+            <a href="./docs" target="blank" rel="opener" data-tooltip="가이드북"><div class="i i-notification"></div></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <main>
+    <div id="pos-layer">
+      <div id="scale-layer">
+        <div id="photozone">
+          <!--
+          Z-INDEX
+          0: photo-bg-area
+          1: photo-layer
+          1: photo-sokmaeum
+          2: photo-border-vignetting-wrap
+          3: photo-overlay-bg
+          6: photo-script-box-area-revamped
+          6: photo-title-box-area-revamped
+          6: photo-location-box-area-revamped
+          7: photo-button-area
+          8: photo-border
+          9: photo-item-controller-area
+          10: photo-watermark
+          -->
+          <div id="photo-bg-area">
+            <img src="" id="photo-bg">
+          </div>
+          <div id="photo-border-vignetting-wrap">
+            <div id="photo-border-vignetting-horizontal">
+              <img src="./assets/theater/misc/gradient.svg" class="top">
+              <img src="./assets/theater/misc/gradient.svg" class="bottom">
+            </div>
+            <div id="photo-border-vignetting-vertical">
+              <img src="./assets/theater/misc/gradient-vert.svg" class="left">
+              <img src="./assets/theater/misc/gradient-vert.svg" class="right">
+            </div>
+          </div>
+          <div id="photo-layer"></div>
+          <div id="photo-sokmaeum">
+            <img src="./assets/theater/sokmaeum/vignetting.svg" id="photo-vignetting">
+            <img src="./assets/theater/sokmaeum/sokmaeum.svg" id="photo-button-sokmaeum">
+          </div>
+          <div id="photo-overlay-bg"></div>
+          <div id="photo-button-area">
+            <img src="./assets/theater/misc/button-back.png" class="photo-button">
+            <img src="./assets/theater/misc/button-auto.png" class="photo-button">
+            <img src="./assets/theater/misc/button-menu.png" class="photo-button">
+          </div>
+          <div id="photo-script-box-area" class="content-type-0">
+            <div id="photo-script-box" class="photo-script-box">
+              <img src="" class="shadow">
+              <img src="" class="bg">
+              <img src="./assets/theater/scriptbox-old/next.svg" class="arrow">
+            </div>
+            <div id="photo-script-box-namearea">
+              <div id="photo-script-box-name-backdrop"></div>
+              <div id="photo-script-box-namebox">
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <span id="script-content"></span>
+          </div>
+          <div id="photo-script-box-area-revamped" class="content-type-1 photo-script-box-pos-7">
+            <button id="button-download-script-box-inline">
+              <div class="i i-download"></div>
+              <p>PNG로 저장(대화창)</p>
+            </button>
+            <div id="theme-0" class="area" data-theme-name="기본">
+              <img src="./assets/theater/scriptbox/scriptbox-white-default.svg" class="bg">
+              <img src="./assets/theater/scriptbox/next-green.svg" class="arrow">
+              <div class="namearea">
+                <div class="nametag">
+                  <p class="name"></p>
+                  <p class="outline"></p>
+                  <div class="emotion-wrap">
+                    <img class="nametag-emotion-surprise" src="./assets/theater/emotion/emotion-0-surprise.svg" alt="emotion">
+                    <img class="nametag-emotion-question" src="./assets/theater/emotion/emotion-1-question.svg" alt="emotion">
+                    <img class="nametag-emotion-surprise2" src="./assets/theater/emotion/emotion-3-surprise2b.svg" alt="emotion">
+                    <img class="nametag-emotion-startle" src="./assets/theater/emotion/emotion-4-startle.svg" alt="emotion">
+                    <img class="nametag-emotion-sparkle" src="./assets/theater/emotion/emotion-5-sparkle.svg" alt="emotion">
+                    <img class="nametag-emotion-angry" src="./assets/theater/emotion/emotion-6-angry.svg" alt="emotion">
+                    <img class="nametag-emotion-stun" src="./assets/theater/emotion/emotion-7-stun.svg" alt="emotion">
+                    <img class="nametag-emotion-sweat" src="./assets/theater/emotion/emotion-8-sweat.svg" alt="emotion">
+                    <img class="nametag-emotion-dizzy" src="./assets/theater/emotion/emotion-9-dizzy.svg" alt="emotion">
+                    <img class="nametag-emotion-star" src="./assets/theater/emotion/emotion-10-star.svg" alt="emotion">
+                    <img class="nametag-emotion-silence" src="./assets/theater/emotion/emotion-11-silence.svg" alt="emotion">
+                    <img class="nametag-emotion-embarrassed" src="./assets/theater/emotion/emotion-12-embarrassed.svg" alt="emotion">
+                    <img class="nametag-emotion-sigh" src="./assets/theater/emotion/emotion-13-sigh.svg" alt="emotion">
+                    <img class="nametag-emotion-panic" src="./assets/theater/emotion/emotion-14-panic.svg" alt="emotion">
+                    <img class="nametag-emotion-disappoint" src="./assets/theater/emotion/emotion-15-disappoint.svg" alt="emotion">
+                    <img class="nametag-emotion-idea" src="./assets/theater/emotion/emotion-16-idea.svg" alt="emotion">
+                  </div>
+                </div>
+              </div>
+              <div class="content-area">
+                <p class="main"></p>
+              </div>
+            </div>
+            <div id="theme-1" class="area" data-theme-name="기본(속마음)">
+              <img src="./assets/theater/scriptbox/scriptbox-purple-default.svg" class="bg">
+              <img src="./assets/theater/scriptbox/next-purple.svg" class="arrow">
+              <div class="namearea">
+                <div class="nametag">
+                  <p class="name"></p>
+                  <p class="outline"></p>
+                  <div class="emotion-wrap">
+                    <img class="nametag-emotion-surprise" src="./assets/theater/emotion/emotion-0-surprise.svg" alt="emotion">
+                    <img class="nametag-emotion-question" src="./assets/theater/emotion/emotion-1-question.svg" alt="emotion">
+                    <img class="nametag-emotion-surprise2" src="./assets/theater/emotion/emotion-3-surprise2b.svg" alt="emotion">
+                    <img class="nametag-emotion-startle" src="./assets/theater/emotion/emotion-4-startle.svg" alt="emotion">
+                    <img class="nametag-emotion-sparkle" src="./assets/theater/emotion/emotion-5-sparkle.svg" alt="emotion">
+                    <img class="nametag-emotion-angry" src="./assets/theater/emotion/emotion-6-angry.svg" alt="emotion">
+                    <img class="nametag-emotion-stun" src="./assets/theater/emotion/emotion-7-stun.svg" alt="emotion">
+                    <img class="nametag-emotion-sweat" src="./assets/theater/emotion/emotion-8-sweat.svg" alt="emotion">
+                    <img class="nametag-emotion-dizzy" src="./assets/theater/emotion/emotion-9-dizzy.svg" alt="emotion">
+                    <img class="nametag-emotion-star" src="./assets/theater/emotion/emotion-10-star.svg" alt="emotion">
+                    <img class="nametag-emotion-silence" src="./assets/theater/emotion/emotion-11-silence.svg" alt="emotion">
+                    <img class="nametag-emotion-embarrassed" src="./assets/theater/emotion/emotion-12-embarrassed.svg" alt="emotion">
+                    <img class="nametag-emotion-sigh" src="./assets/theater/emotion/emotion-13-sigh.svg" alt="emotion">
+                    <img class="nametag-emotion-panic" src="./assets/theater/emotion/emotion-14-panic.svg" alt="emotion">
+                    <img class="nametag-emotion-disappoint" src="./assets/theater/emotion/emotion-15-disappoint.svg" alt="emotion">
+                    <img class="nametag-emotion-idea" src="./assets/theater/emotion/emotion-16-idea.svg" alt="emotion">
+                  </div>
+                </div>
+              </div>
+              <div class="content-area">
+                <p class="main"></p>
+                <p class="outline"></p>
+              </div>
+            </div>
+            <div id="theme-2" class="area" data-theme-name="생각">
+              <img src="./assets/theater/scriptbox/scriptbox-white-thought.svg" class="bg">
+              <img src="./assets/theater/scriptbox/next-green.svg" class="arrow">
+              <div class="namearea">
+                <div class="nametag">
+                  <p class="name"></p>
+                  <p class="outline"></p>
+                  <div class="emotion-wrap">
+                    <img class="nametag-emotion-surprise" src="./assets/theater/emotion/emotion-0-surprise.svg" alt="emotion">
+                    <img class="nametag-emotion-question" src="./assets/theater/emotion/emotion-1-question.svg" alt="emotion">
+                    <img class="nametag-emotion-surprise2" src="./assets/theater/emotion/emotion-3-surprise2b.svg" alt="emotion">
+                    <img class="nametag-emotion-startle" src="./assets/theater/emotion/emotion-4-startle.svg" alt="emotion">
+                    <img class="nametag-emotion-sparkle" src="./assets/theater/emotion/emotion-5-sparkle.svg" alt="emotion">
+                    <img class="nametag-emotion-angry" src="./assets/theater/emotion/emotion-6-angry.svg" alt="emotion">
+                    <img class="nametag-emotion-stun" src="./assets/theater/emotion/emotion-7-stun.svg" alt="emotion">
+                    <img class="nametag-emotion-sweat" src="./assets/theater/emotion/emotion-8-sweat.svg" alt="emotion">
+                    <img class="nametag-emotion-dizzy" src="./assets/theater/emotion/emotion-9-dizzy.svg" alt="emotion">
+                    <img class="nametag-emotion-star" src="./assets/theater/emotion/emotion-10-star.svg" alt="emotion">
+                    <img class="nametag-emotion-silence" src="./assets/theater/emotion/emotion-11-silence.svg" alt="emotion">
+                    <img class="nametag-emotion-embarrassed" src="./assets/theater/emotion/emotion-12-embarrassed.svg" alt="emotion">
+                    <img class="nametag-emotion-sigh" src="./assets/theater/emotion/emotion-13-sigh.svg" alt="emotion">
+                    <img class="nametag-emotion-panic" src="./assets/theater/emotion/emotion-14-panic.svg" alt="emotion">
+                    <img class="nametag-emotion-disappoint" src="./assets/theater/emotion/emotion-15-disappoint.svg" alt="emotion">
+                    <img class="nametag-emotion-idea" src="./assets/theater/emotion/emotion-16-idea.svg" alt="emotion">
+                  </div>
+                </div>
+              </div>
+              <div class="content-area">
+                <p class="main"></p>
+              </div>
+            </div>
+            <div id="theme-3" class="area" data-theme-name="생각(속마음)">
+              <img src="./assets/theater/scriptbox/scriptbox-purple-thought.svg" class="bg">
+              <img src="./assets/theater/scriptbox/next-purple.svg" class="arrow">
+              <div class="namearea">
+                <div class="nametag">
+                  <p class="name"></p>
+                  <p class="outline"></p>
+                  <div class="emotion-wrap">
+                    <img class="nametag-emotion-surprise" src="./assets/theater/emotion/emotion-0-surprise.svg" alt="emotion">
+                    <img class="nametag-emotion-question" src="./assets/theater/emotion/emotion-1-question.svg" alt="emotion">
+                    <img class="nametag-emotion-surprise2" src="./assets/theater/emotion/emotion-3-surprise2b.svg" alt="emotion">
+                    <img class="nametag-emotion-startle" src="./assets/theater/emotion/emotion-4-startle.svg" alt="emotion">
+                    <img class="nametag-emotion-sparkle" src="./assets/theater/emotion/emotion-5-sparkle.svg" alt="emotion">
+                    <img class="nametag-emotion-angry" src="./assets/theater/emotion/emotion-6-angry.svg" alt="emotion">
+                    <img class="nametag-emotion-stun" src="./assets/theater/emotion/emotion-7-stun.svg" alt="emotion">
+                    <img class="nametag-emotion-sweat" src="./assets/theater/emotion/emotion-8-sweat.svg" alt="emotion">
+                    <img class="nametag-emotion-dizzy" src="./assets/theater/emotion/emotion-9-dizzy.svg" alt="emotion">
+                    <img class="nametag-emotion-star" src="./assets/theater/emotion/emotion-10-star.svg" alt="emotion">
+                    <img class="nametag-emotion-silence" src="./assets/theater/emotion/emotion-11-silence.svg" alt="emotion">
+                    <img class="nametag-emotion-embarrassed" src="./assets/theater/emotion/emotion-12-embarrassed.svg" alt="emotion">
+                    <img class="nametag-emotion-sigh" src="./assets/theater/emotion/emotion-13-sigh.svg" alt="emotion">
+                    <img class="nametag-emotion-panic" src="./assets/theater/emotion/emotion-14-panic.svg" alt="emotion">
+                    <img class="nametag-emotion-disappoint" src="./assets/theater/emotion/emotion-15-disappoint.svg" alt="emotion">
+                    <img class="nametag-emotion-idea" src="./assets/theater/emotion/emotion-16-idea.svg" alt="emotion">
+                  </div>
+                </div>
+              </div>
+              <div class="content-area">
+                <p class="main"></p>
+                <p class="outline"></p>
+              </div>
+            </div>
+            <div id="theme-4" class="area" data-theme-name="놀람">
+              <img src="./assets/theater/scriptbox/scriptbox-white-shout.svg" class="bg">
+              <img src="./assets/theater/scriptbox/next-green.svg" class="arrow">
+              <div class="namearea">
+                <div class="nametag">
+                  <p class="name"></p>
+                  <p class="outline"></p>
+                  <div class="emotion-wrap">
+                    <img class="nametag-emotion-surprise" src="./assets/theater/emotion/emotion-0-surprise.svg" alt="emotion">
+                    <img class="nametag-emotion-question" src="./assets/theater/emotion/emotion-1-question.svg" alt="emotion">
+                    <img class="nametag-emotion-surprise2" src="./assets/theater/emotion/emotion-3-surprise2b.svg" alt="emotion">
+                    <img class="nametag-emotion-startle" src="./assets/theater/emotion/emotion-4-startle.svg" alt="emotion">
+                    <img class="nametag-emotion-sparkle" src="./assets/theater/emotion/emotion-5-sparkle.svg" alt="emotion">
+                    <img class="nametag-emotion-angry" src="./assets/theater/emotion/emotion-6-angry.svg" alt="emotion">
+                    <img class="nametag-emotion-stun" src="./assets/theater/emotion/emotion-7-stun.svg" alt="emotion">
+                    <img class="nametag-emotion-sweat" src="./assets/theater/emotion/emotion-8-sweat.svg" alt="emotion">
+                    <img class="nametag-emotion-dizzy" src="./assets/theater/emotion/emotion-9-dizzy.svg" alt="emotion">
+                    <img class="nametag-emotion-star" src="./assets/theater/emotion/emotion-10-star.svg" alt="emotion">
+                    <img class="nametag-emotion-silence" src="./assets/theater/emotion/emotion-11-silence.svg" alt="emotion">
+                    <img class="nametag-emotion-embarrassed" src="./assets/theater/emotion/emotion-12-embarrassed.svg" alt="emotion">
+                    <img class="nametag-emotion-sigh" src="./assets/theater/emotion/emotion-13-sigh.svg" alt="emotion">
+                    <img class="nametag-emotion-panic" src="./assets/theater/emotion/emotion-14-panic.svg" alt="emotion">
+                    <img class="nametag-emotion-disappoint" src="./assets/theater/emotion/emotion-15-disappoint.svg" alt="emotion">
+                    <img class="nametag-emotion-idea" src="./assets/theater/emotion/emotion-16-idea.svg" alt="emotion">
+                  </div>
+                </div>
+              </div>
+              <div class="content-area">
+                <p class="main"></p>
+              </div>
+            </div>
+            <div id="theme-5" class="area" data-theme-name="놀람(속마음)">
+              <img src="./assets/theater/scriptbox/scriptbox-purple-shout.svg" class="bg">
+              <img src="./assets/theater/scriptbox/next-purple.svg" class="arrow">
+              <div class="namearea">
+                <div class="nametag">
+                  <p class="name"></p>
+                  <p class="outline"></p>
+                  <div class="emotion-wrap">
+                    <img class="nametag-emotion-surprise" src="./assets/theater/emotion/emotion-0-surprise.svg" alt="emotion">
+                    <img class="nametag-emotion-question" src="./assets/theater/emotion/emotion-1-question.svg" alt="emotion">
+                    <img class="nametag-emotion-surprise2" src="./assets/theater/emotion/emotion-3-surprise2b.svg" alt="emotion">
+                    <img class="nametag-emotion-startle" src="./assets/theater/emotion/emotion-4-startle.svg" alt="emotion">
+                    <img class="nametag-emotion-sparkle" src="./assets/theater/emotion/emotion-5-sparkle.svg" alt="emotion">
+                    <img class="nametag-emotion-angry" src="./assets/theater/emotion/emotion-6-angry.svg" alt="emotion">
+                    <img class="nametag-emotion-stun" src="./assets/theater/emotion/emotion-7-stun.svg" alt="emotion">
+                    <img class="nametag-emotion-sweat" src="./assets/theater/emotion/emotion-8-sweat.svg" alt="emotion">
+                    <img class="nametag-emotion-dizzy" src="./assets/theater/emotion/emotion-9-dizzy.svg" alt="emotion">
+                    <img class="nametag-emotion-star" src="./assets/theater/emotion/emotion-10-star.svg" alt="emotion">
+                    <img class="nametag-emotion-silence" src="./assets/theater/emotion/emotion-11-silence.svg" alt="emotion">
+                    <img class="nametag-emotion-embarrassed" src="./assets/theater/emotion/emotion-12-embarrassed.svg" alt="emotion">
+                    <img class="nametag-emotion-sigh" src="./assets/theater/emotion/emotion-13-sigh.svg" alt="emotion">
+                    <img class="nametag-emotion-panic" src="./assets/theater/emotion/emotion-14-panic.svg" alt="emotion">
+                    <img class="nametag-emotion-disappoint" src="./assets/theater/emotion/emotion-15-disappoint.svg" alt="emotion">
+                    <img class="nametag-emotion-idea" src="./assets/theater/emotion/emotion-16-idea.svg" alt="emotion">
+                  </div>
+                </div>
+              </div>
+              <div class="content-area">
+                <p class="main"></p>
+                <p class="outline"></p>
+              </div>
+            </div>
+            <div id="theme-6" class="area" data-theme-name="그라데이션 박스">
+              <img src="./assets/theater/scriptbox/scriptbox-gradient.svg" class="bg">
+              <div class="content-area">
+                <img src="./assets/theater/scriptbox/next-white.svg" class="arrow">
+                <p class="main"></p>
+                <p class="outline"></p>
+                <div class="namearea-wrap">
+                  <div class="namearea">
+                    <img src="./assets/theater/scriptbox/nametag.svg" class="bg">
+                    <img src="./assets/theater/scriptbox/nametag-arrow.svg" class="tail">
+                    <p class="name"></p>
+                  </div>
+                  <p class="main"></p>
+                </div>
+              </div>
+            </div>
+            <div id="theme-7" class="area" data-theme-name="검정 박스">
+              <div class="bg"></div>
+              <div class="content-area">
+                <img src="./assets/theater/scriptbox/next-white.svg" class="arrow">
+                <p class="main"></p>
+              </div>
+            </div>
+            <div id="theme-8" class="area" data-theme-name="전체 화면">
+              <div class="bg"></div>
+              <div class="content-area">
+                <p class="main"></p>
+                <p class="main"></p>
+              </div>
+            </div>
+            <div id="theme-9" class="area" data-theme-name="프로필 사진 + 대화창">
+              <div class="bg">
+                <div class="profile-area">
+                  <img id="profile-image-area" src="./assets/theater/dialogue/dialogue-profile-placeholder.svg" alt="profile">
+                </div>
+                <div class="namearea-wrap">
+                  <div class="namearea">
+                    <img src="./assets/theater/scriptbox/nametag.svg" class="bg">
+                    <img src="./assets/theater/scriptbox/nametag-arrow.svg" class="tail">
+                    <p class="name"></p>
+                  </div>
+                  <p class="main"></p>
+                </div>
+                <div class="content-area">
+                  <p class="main"></p>
+                </div>
+                <img src="./assets/theater/scriptbox/next-white-alt.svg" class="arrow">
+              </div>
+            </div>
+          </div>
+          <div id="photo-select-area" class="content-type-0">
+            <div id="photo-select">
+              <div class="photo-select-option">
+                <img src="./assets/theater/option-old/option.svg">
+                <p></p>
+              </div>
+              <div class="photo-select-option">
+                <img src="./assets/theater/option-old/option.svg">
+                <p></p>
+              </div>
+              <div class="photo-select-option">
+                <img src="./assets/theater/option-old/option.svg">
+                <p></p>
+              </div>
+            </div>
+          </div>
+          <div id="photo-select-area-revamped" class="content-type-1">
+            <div id="photo-select-revamped">
+              <div class="photo-select-option">
+                <img src="./assets/theater/option/option.svg">
+                <p></p>
+              </div>
+              <div class="photo-select-option">
+                <img src="./assets/theater/option/option.svg">
+                <p></p>
+              </div>
+              <div class="photo-select-option">
+                <img src="./assets/theater/option/option.svg">
+                <p></p>
+              </div>
+            </div>
+          </div>
+          <div id="photo-title-box-area" class="content-type-0">
+            <img src="./assets/theater/titlebox-old/titlebox.svg" id="photo-title-box-backdrop">
+            <p id="photo-title">
+              <img src="./assets/theater/titlebox-old/star.svg">
+              <span class="photo-title"></span>
+            </p>
+            <div id="photo-title-box-namearea">
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div id="photo-title-box-area-revamped" class="content-type-1">
+            <img src="./assets/theater/titlebox/film.png" alt="Titlebox-revamped-backdrop" id="film" loading="lazy">
+            <img src="./assets/theater/titlebox/titlebox.svg" alt="Titlebox-revamped" id="photo-title-box-revamped">
+            <p class="photo-title-name name"></p>
+            <p class="photo-title-name outline"></p>
+            <p class="photo-title title"></p>
+            <p class="photo-title outline"></p>
+          </div>
+          <div id="photo-location-box-area" class="content-type-0">
+            <div class="shadow"></div>
+            <div class="backdrop"></div>
+            <img src="./assets/theater/misc/leaf.svg" alt="">
+            <p class="photo-location"></p>
+          </div>
+          <div id="photo-location-box-area-revamped" class="content-type-1">
+            <p class="photo-location location"></p>
+            <p class="photo-location outline"></p>
+          </div>
+          <div id="photo-item-controller-area" data-html2canvas-ignore="true">
+            <div id="photo-item-controller" style="display: none;">
+              <div id="photo-controller-point-area">
+                <div id="resize-point-0" class="resize-point"></div>
+                <div id="resize-point-1" class="resize-point"></div>
+                <div id="resize-point-2" class="resize-point"></div>
+                <div id="resize-point-3" class="resize-point"></div>
+                <div id="resize-point-4" class="resize-point"></div>
+                <div id="resize-point-5" class="resize-point"></div>
+                <div id="resize-point-6" class="resize-point"></div>
+                <div id="resize-point-7" class="resize-point"></div>
+                <div id="rotation-point"></div>
+              </div>
+              <div id="photo-controller-menu-area" class="menuset">
+                <div class="list-row">
+                  <label id="label-controller-opacity">
+                    <input type="range" min="0" max="100" step="1" value="100" autocomplete="off" id="controller-opacity">
+                  </label>
+                </div>
+                <label id="label-controller-darkness" class="list-row wf"><span>실루엣 <output id="controller-darkness-value">0%</output></span><input type="range" min="0" max="100" step="1" value="0" id="controller-darkness"></label>
+                <div class="divline-row"></div>
+                <div class="list-row">
+                  <button id="button-controller-additional"><div class="i i-config"></div></button>
+                  <button id="button-controller-expression" class="wf" style="display:none"><div class="i ii-image"></div><p>표정</p></button>
+                  <button id="button-controller-change"><div class="i ii-image"></div><p>변경</p></button>
+                  <button id="button-controller-remove-alt"><div class="i i-trash"></div></button>
+                  <button id="button-controller-unselect-alt"><div class="i i-deny"></div></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="photo-border" data-html2canvas-ignore="true"></div>
+          <div id="photo-watermark">
+            <p class="photo-watermark-text">가나다</p>
+          </div>
+          <!-- <div id="photo-tcag-watermark"></div> -->
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="main-context-menu" class="context-menu">
+    <div class="list-row">
+      <button class="button-resource-gallery"><i class="gallery"></i></button>
+      <button id="button-cm-add-image"><div class="i ii-image"></div></button>
+      <button id="button-cm-add-dialogue"><div class="i ii-dialogue"></div></button>
+      <button id="button-cm-add-sticker"><div class="i ii-sticker"></div></button>
+    </div>
+    <div class="divline-row"></div>
+    <div class="list-row">
+      <button class="button-zoom-out" data-context-menu="maintain"><span class="i i-minus"></span></button>
+      <button class="button-zoom-reset" data-context-menu="maintain"><i class="search"></i><p class="scale"></p></button>
+      <button class="button-zoom-in" data-context-menu="maintain"><span class="i i-plus"></span></button>
+    </div>
+    <div class="divline-row"></div>
+    <div class="list-column wf">
+      <button id="button-cm-create-slide" class="wf fjcs"><div class="i i-create-slide"></div><p>슬라이드 추가</p></button>
+      <button id="button-cm-set-bg" class="wf fjcs"><span class="i ii-image"></span><p>배경 이미지 설정</p></button>
+      <button class="button-zoom-reset wf fjcs" style="display:none;"><div class="i i-rescue"></div><p>뷰포트 초기화</p></button>
+      <button id="button-test-menu" class="wf fjcs" data-secret="true"><div class="i"></div><p>실험실</p></button>
+    </div>
+    <a class="regulation-link" target="_blank">2차 창작물 활용 범위</a>
+  </div>
+  <div id="modal-color-preset" class="modal">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-palette"></div>
+        <h1>사도 색상표</h1>
+      </div>
+      <div class="content">
+        <div id="color-preset-list"></div>
+      </div>
+      <div class="controller">
+        <button id="button-refresh-color-preset">
+          <div class="i i-clockwise"></div>
+        </button>
+        <button class="close"></button>
+        <label>
+          <input type="checkbox" id="checkbox-toggle-auto-change-name" checked>
+          <p>이름도 같이 변경</p>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div id="modal-markdown" class="modal">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-notification"></div>
+        <h1>마크다운 문법 도움말</h1>
+      </div>
+      <div class="content">
+        <p>내용 입력칸에 다음과 같은 규칙을 적용하여 작성하면 영역 내 글자의 크기나 색상을 조절할 수 있습니다.<br>한 단어에 여러 종류의 규칙을 적용할 수 있으며, 줄바꿈도 가능합니다.</p>
+        <div class="divline-row"></div>
+        <pre>(((가나다:::&#09;&#09;→ 작은 글자</pre>
+        <pre>{{{가나다:::&#09;&#09;→ 중간 글자(기본)</pre>
+        <pre>[[[가나다:::&#09;&#09;→ 큰 글자</pre>
+        <pre>>>>가나다:::&#09;→ 기본 강조색(초록)</pre>
+        <pre>>>r>>가나다:::&#09;→ 강조색(빨강)</pre>
+        <pre>>>g>>가나다:::&#09;→ 강조색(초록)</pre>
+        <pre>>>b>>가나다:::&#09;→ 강조색(파랑)</pre>
+        <pre>>>y>>가나다:::&#09;→ 강조색(노랑)</pre>
+        <pre>>>p>>가나다:::&#09;→ 강조색(보라)</pre>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-dialogue-quick" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-config"></div>
+        <h1>말풍선</h1>
+      </div>
+      <div class="content">
+        <h4>내용</h4>
+        <textarea id="input-dialogue-content" class="input-content wf"></textarea>
+        <button class="button-markdown-help wfc">
+          <div class="i i-notification"></div>
+          <p>마크다운 문법 도움말</p>
+        </button>
+        <div class="divline-row"></div>
+        <div class="listbox wf f1 fais">
+          <div class="list-row wf f1">
+            <h4>크기</h4>
+            <div class="divline-column"></div>
+            <div class="list-row wf f1 fjcb">
+              <label><input type="radio" name="object-dialogue-sizing" class="object-dialogue-sizing" value="0">자동</label>
+              <label><input type="radio" name="object-dialogue-sizing" class="object-dialogue-sizing" value="1">짧음</label>
+              <label><input type="radio" name="object-dialogue-sizing" class="object-dialogue-sizing" value="2">보통</label>
+              <label><input type="radio" name="object-dialogue-sizing" class="object-dialogue-sizing" value="3">긺</label>
+              <label><input type="radio" name="object-dialogue-sizing" class="object-dialogue-sizing" value="4">아주 긺</label>
+            </div>
+          </div>
+        </div>
+        <div class="listbox wf f1 fais">
+          <div class="list-row wf f1">
+            <h4>방향</h4>
+            <div class="divline-column"></div>
+            <div class="list-row wf f1 fjcb">
+              <label><input type="radio" name="object-dialogue-positioning" class="object-dialogue-positioning" value="0">↖</label>
+              <label><input type="radio" name="object-dialogue-positioning" class="object-dialogue-positioning" value="1">↗</label>
+              <label><input type="radio" name="object-dialogue-positioning" class="object-dialogue-positioning" value="2">↙</label>
+              <label><input type="radio" name="object-dialogue-positioning" class="object-dialogue-positioning" value="3">↘</label>
+              <label><input type="radio" name="object-dialogue-positioning" class="object-dialogue-positioning" value="4">+</label>
+            </div>
+          </div>
+        </div>
+        <div class="listbox wf f1 fais">
+          <div class="list-row wf f1">
+            <h4>테마</h4>
+            <div class="divline-column"></div>
+            <div class="list-row wf f1 fjcb">
+              <label><input type="radio" name="object-dialogue-theme" class="object-dialogue-theme" value="0">사각형</label>
+              <label><input type="radio" name="object-dialogue-theme" class="object-dialogue-theme" value="1">기본</label>
+              <label><input type="radio" name="object-dialogue-theme" class="object-dialogue-theme" value="2">속마음</label>
+            </div>
+          </div>
+        </div>
+        <div class="list-column wf fais" style="display:none;">
+          <div class="divline-row"></div>
+          <h4>PNG 이미지로 저장(말풍선 개체)</h4>
+          <button class="object-download wfc">
+            <div class="i i-download"></div>
+            <p>저장</p>
+          </button>
+          <div class="list-row fjcc wf">
+            <span><small>Powered by <a href="https://github.com/yorickshan/html2canvas-pro" target="_blank">html2canvas-pro</a></small></span>
+          </div>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-sticker-quick" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-config"></div>
+        <h1>스티커 옵션</h1>
+      </div>
+      <div class="content">
+        <h4>스티커</h4>
+        <select id="select-sticker-style" class="f1"></select>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-sprite-expression" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-config"></div>
+        <h1>스프라이트 표정 변경</h1>
+      </div>
+      <div class="content">
+        <p id="sprite-expression-help">PNG 파일 추가는 현재 사도 표정만 등록하고, 사도 표정 폴더 추가는 선택한 폴더와 하위 폴더의 PNG를 파일명 기준으로 사도별 분류해 이 브라우저에 저장합니다. 서버로 업로드하지 않습니다.</p>
+        <div class="sprite-expression-import-actions">
+          <label id="button-load-sprite-expressions" class="sprite-expression-picker wfc"><span class="i ii-image" aria-hidden="true"></span><span>PNG 파일 추가</span><input type="file" id="sprite-expression-folder" accept="image/png" multiple autocomplete="off"></label>
+          <label id="button-load-sprite-expression-directory" class="sprite-expression-picker wfc"><span class="i ii-image" aria-hidden="true"></span><span>사도 표정 폴더 추가</span><input type="file" id="sprite-expression-directory" accept="image/png" multiple webkitdirectory directory autocomplete="off"></label>
+        </div>
+        <div id="sprite-expression-list" class="sprite-expression-list"></div>
+        <div id="sprite-expression-config" class="sprite-expression-config" hidden>
+          <p>아래 조각을 연출 설정의 <code>characters</code> 아래 병합하세요.</p>
+          <pre></pre>
+          <button id="button-copy-sprite-expression-config" class="wfc"><div class="i i-copy"></div><p>설정 조각 복사</p></button>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-resource-gallery" class="modal">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <il class="icon gallery"></il>
+        <h1>리소스 갤러리</h1>
+      </div>
+      <div class="content">
+        <div id="resource-gallery">
+          <div class="resource-gallery-subdiv">
+            <p>이미지 리소스</p>
+            <div id="rg-image" class="item">
+              <img src="./assets/theater/thumbnails/thumbnail-image.svg" alt="Thumbnail" class="thumbnail">
+              <p class="name">이미지</p>
+            </div>
+          </div>
+          <div class="resource-gallery-subdiv">
+            <p>기본 리소스</p>
+            <div id="rg-scriptbox" class="item" style="display:none;">
+              <img src="./assets/theater/thumbnails/thumbnail-scriptbox.svg" alt="Thumbnail" class="thumbnail">
+              <p class="name">대화창</p>
+            </div>
+            <div id="rg-dialogue" class="item">
+              <img src="./assets/theater/thumbnails/thumbnail-dialogue.svg" alt="Thumbnail" class="thumbnail">
+              <p class="name">말풍선</p>
+            </div>
+            <div id="rg-sticker" class="item">
+              <img src="./assets/theater/thumbnails/thumbnail-sticker.svg" alt="Thumbnail" class="thumbnail">
+              <p class="name">스티커</p>
+            </div>
+          </div>
+          <div class="resource-gallery-subdiv">
+            <p>필터</p>
+            <div id="rg-filter-default" class="item" style="display:none;">
+              <img src="./assets/theater/thumbnails/thumbnail-filter.svg" alt="Thumbnail" class="thumbnail">
+              <p class="name">필터</p>
+            </div>
+            <div id="rg-filter-cinemascope" class="item">
+              <img src="./assets/theater/thumbnails/thumbnail-filter.svg" alt="Thumbnail" class="thumbnail">
+              <p class="name">시네마스코프 레터박스</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-colorpicker-namearea" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-palette"></div>
+        <h1>이름표 색상</h1>
+      </div>
+      <div class="content">
+        <div id="colorpicker-namearea" class="colorpicker">
+          <div class="left colorpicker-preview">
+            <p class="colorpicker-preview-value"></p>
+          </div>
+          <div class="right">
+            <p>R</p>
+            <label class="colorpicker-range colorpicker-r-revamped"><input type="range" min="0" max="255" step="1" value="238" id="colorpicker-namearea-r" class="colorpicker-range-input r"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-r">
+            <p>G</p>
+            <label class="colorpicker-range colorpicker-g-revamped"><input type="range" min="0" max="255" step="1" value="195" id="colorpicker-namearea-g" class="colorpicker-range-input g"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-g">
+            <p>B</p>
+            <label class="colorpicker-range colorpicker-b-revamped"><input type="range" min="0" max="255" step="1" value="117" id="colorpicker-namearea-b" class="colorpicker-range-input b"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-b">
+            <p style="display:none;">A</p>
+            <label class="colorpicker-range colorpicker-a-revamped" style="display:none;"><input type="range" min="0" max="100" step="1" value="100" id="colorpicker-namearea-a" class="colorpicker-range-input a"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-a" style="display:none;">
+          </div>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="button-color-preset" class="wfc fjcc"><div class="i i-palette"></div><p>사도 색상표</p></button>
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-colorpicker-bg" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-palette"></div>
+        <h1>배경 색상</h1>
+      </div>
+      <div class="content">
+        <div id="colorpicker-bg" class="colorpicker">
+          <div class="left colorpicker-preview">
+            <p class="colorpicker-preview-value"></p>
+          </div>
+          <div class="right">
+            <p>R</p>
+            <label class="colorpicker-range colorpicker-r-revamped"><input type="range" min="0" max="255" step="1" value="0" id="colorpicker-bg-r" class="colorpicker-range-input r"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-r">
+            <p>G</p>
+            <label class="colorpicker-range colorpicker-g-revamped"><input type="range" min="0" max="255" step="1" value="0" id="colorpicker-bg-g" class="colorpicker-range-input g"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-g">
+            <p>B</p>
+            <label class="colorpicker-range colorpicker-b-revamped"> <input type="range" min="0" max="255" step="1" value="0" id="colorpicker-bg-b" class="colorpicker-range-input b"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-b">
+            <p style="display:none;">A</p>
+            <label class="colorpicker-range colorpicker-a-revamped" style="display:none;"><input type="range" min="0" max="100" step="1" value="100" id="colorpicker-bg-a" class="colorpicker-range-input a"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-a" style="display:none;">
+          </div>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-colorpicker-overlay" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-palette"></div>
+        <h1>오버레이 색상</h1>
+      </div>
+      <div class="content">
+        <div id="colorpicker-overlay" class="colorpicker">
+          <div class="left colorpicker-preview">
+            <p class="colorpicker-preview-value"></p>
+          </div>
+          <div class="right">
+            <p>R</p>
+            <label class="colorpicker-range colorpicker-r-revamped"><input type="range" min="0" max="255" step="1" value="0" id="colorpicker-overlay-r" class="colorpicker-range-input r"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-r">
+            <p>G</p>
+            <label class="colorpicker-range colorpicker-g-revamped"><input type="range" min="0" max="255" step="1" value="0" id="colorpicker-overlay-g" class="colorpicker-range-input g"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-g">
+            <p>B</p>
+            <label class="colorpicker-range colorpicker-b-revamped"> <input type="range" min="0" max="255" step="1" value="0" id="colorpicker-overlay-b" class="colorpicker-range-input b"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-b">
+            <p>A</p>
+            <label class="colorpicker-range colorpicker-a-revamped"><input type="range" min="0" max="100" step="1" value="0" id="colorpicker-overlay-a" class="colorpicker-range-input a"></label>
+            <input type="number" class="colorpicker-input colorpicker-input-a">
+          </div>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-slide-size-preset" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <div class="icon il i-config"></div>
+        <h1>크기 프리셋</h1>
+      </div>
+      <div class="content">
+        <div class="list-column wf">
+          <button class="button-slide-size wf f1 fjcc" data-width="1280" data-height="640"><div class="i i-config"></div><p>1280×640 (2:1)</p></button>
+          <button class="button-slide-size wf f1 fjcc" data-width="1280" data-height="720"><div class="i i-config"></div><p>1280×720 (16:9)</p></button>
+          <button class="button-slide-size wf f1 fjcc" data-width="1788" data-height="700"><div class="i i-config"></div><p>1788×700 (23:9)</p></button>
+          <button class="button-slide-size wf f1 fjcc" data-width="1280" data-height="1066"><div class="i i-config"></div><p>1280×1066 (6:5)</p></button>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-experimental" class="modal w500">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <h1>실험실</h1>
+      </div>
+      <div class="content">
+        <h4>실험용 기능이나 기본적으로 숨겨진 기능을 활성화할 수 있습니다.</h4>
+        <div class="divline-row"></div>
+        <div class="list-column wf fais">
+          <label class="wf">
+            <input type="checkbox" id="test-checkbox-activate-script-box-type" autocomplete="off">
+            <span>대화창 모드 전환 활성화</span>
+            <div class="toggle"></div>
+          </label>
+          <label class="wf">
+            <input type="checkbox" id="test-checkbox-activate-save-on-browser" autocomplete="off">
+            <span>브라우저에 저장 활성화</span>
+            <div class="toggle"></div>
+          </label>
+        </div>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-about" class="modal">
+    <div class="bg bg-acrylic"></div>
+    <div class="body">
+      <div class="title">
+        <h1>앱 정보</h1>
+      </div>
+      <div class="content">
+        <img src="./assets/essentials/banner.svg" alt="Project Pictor" class="about-thumbnail">
+        <div class="divline-row"></div>
+        <p class="about-app"></p>
+        <p class="about-desc"></p>
+        <p>Acherium 제작, 클뜯 요소 없음&trade;.</p>
+        <p>'트릭컬: 리바이브(Trickcal RE:VIVE)'는 ㈜에피드게임즈의 상표입니다.</p>
+        <div class="divline-row"></div>
+        <a class="regulation-link" target="_blank">- 트릭컬: 리바이브 2차 창작물 활용 범위에 대한 안내</a>
+        <a href="https://github.com/acherium" target="_blank">- GitHub</a>
+        <div class="divline-row"></div>
+        <!-- <p class="about-lyra"></p> -->
+        <p>Powered by <a href="https://github.com/yorickshan/html2canvas-pro" target="_blank">html2canvas-pro</a></p>
+      </div>
+      <div class="controller">
+        <button class="close"></button>
+      </div>
+    </div>
+  </div>
+  <div id="alert-downloading" class="alert" style="display: none;">
+    <h3>저장중입니다</h3>
+    <p id="alert-download-progress" style="display:none;"></p>
+  </div>
+  <div id="alert-regulation" class="notification" lyra-autoShow="false" lyra-defaultCloseButton="false">
+    <p><a href="https://epidgames.oqupie.com/portal/2399/article/50943" target="_blank">2차 창작물에 대한 규정</a>을 준수하시기 바랍니다.</p>
+  </div>
+  <div id="search-area" style="display:none;">
+    <div id="search">
+      <il class="search"></il>
+      <input type="text" id="input-search" placeholder="여기에 대사를 입력하여 검색">
+    </div>
+    <div id="search-result-list">
+      <h4 class="num"></h4>
+      <div class="desc">
+        키보드 'Tab' 또는 'Shift+Tab'으로 이동.<br>
+        'Enter'로 선택, 'ESC'로 검색 닫기.
+      </div>
+      <div class="slist"></div>
+    </div>
+  </div>
+  <div id="quick-input-area" style="display:none;">
+    <div id="quick">
+      <div class="il i-arrow-e"></div>
+      <input type="text" id="input-quick" placeholder="여기에 새 대사를 입력">
+    </div>
+    <div id="quick-option-list">
+      <div>
+        <h4>현재 발화자: <span class="name"></span></h4>
+        <p style="display:none;">Reserved Preset Index: <span class="index"></span></p>
+      </div>
+      <div class="desc">
+        키보드 'PgUp' 또는 'PgDown'으로 캐릭터 프리셋 사이클.<br>
+        'Enter'로 적용, 'ESC'로 입력창 닫기.<br>
+        주의: 이전 대사를 교체합니다.
+      </div>
+    </div>
+  </div>
+  <div id="splash-area" style="display:none;">
+    <div id="splash">
+      <div class="desc-area">
+        2차 창작물에 대한 규정을 준수하시기 바랍니다<br>
+        자세한 내용은 '앱 정보(H)'메뉴를 확인하세요
+      </div>
+      <div class="image-area">
+        <div id="splash-logo"></div>
+      </div>
+      <div class="title-area">
+        <h1>트릭컬 테마극장 생성기</h1>
+        <p>Build <span class="ver">-</span></p>
+      </div>
+    </div>
+  </div>
+  <div id="immersive-splash-area">
+    <div id="immersive-splash">
+      <div class="app-info">
+        <div class="logo"></div>
+        <p>
+          트릭컬 테마극장 생성기<br>
+          <span>Build <span class="ver"></span></span>
+        </p>
+      </div>
+      <div class="divline-row"></div>
+      <div class="button-area">
+        <button id="button-splash-open"><div class="i i-open"></div><p>프로젝트 열기</p></button>
+        <button id="button-splash-close"><div class="i i-deny"></div><p>닫기</p></button>
+      </div>
+      <span class="regulation-alert">
+        <a class="regulation-link" target="_blank">2차 창작물에 대한 규정</a>을 준수하시기 바랍니다<br>
+        자세한 내용은 '앱 정보(H)'메뉴를 확인하세요
+      </span>
+    </div>
+  </div>
+  <div id="file-drop-position-area">
+    <div class="top">
+      <p>사도로 추가</p>
+    </div>
+    <div class="bottom">
+      <p>이미지 요소로 추가</p>
+    </div>
+  </div>
+</body>
+</html>

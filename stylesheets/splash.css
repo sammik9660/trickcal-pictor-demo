@@ -1,0 +1,184 @@
+@charset "UTF-8";
+#splash-area {
+  display: grid;
+  position: fixed;
+  place-items: center;
+  left: 0;
+  top: 0;
+  padding: var(--p);
+  z-index: 10000;
+
+  max-width: calc(100dvw - var(--p) * 2);
+  max-height: calc(100dvh - var(--p) * 2);
+  width: 100dvw;
+  height: 100dvh;
+  
+  pointer-events: none;
+
+  animation: 1s linear 1.5s ani-fade-out both;
+}
+
+#splash {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+  overflow: hidden;
+
+  max-width: inherit;
+  max-height: inherit;
+  width: 600px;
+  height: 300px;
+
+  border: solid 2px var(--c-accent);
+  border-radius: var(--r-medium);
+  background-color: var(--c-main);
+}
+
+#splash-logo {
+  margin-left: var(--m-large);
+
+  width: 80px;
+  aspect-ratio: 1/1;
+
+  background: no-repeat center/100% 100% url("../assets/essentials/logo-black.svg");
+}
+@media (prefers-color-scheme: dark) { #splash-logo { background-image: url("../assets/essentials/logo-white.svg"); } }
+
+#splash > .image-area {
+  display: flex;
+  align-items: end;
+  justify-content: start;
+  /* padding: var(--p); */
+
+  /* background-color: var(--c-main); */
+}
+#splash > .image-area > img {
+  margin-left: var(--m-large);
+
+  width: 80px;
+  aspect-ratio: 1/1;
+}
+
+#splash > .title-area {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: var(--p) var(--p-large);
+
+  /* background-color: var(--c-accent); */
+}
+#splash > .title-area > h1 {
+  font-family: "ONE Mobile POP";
+  font-weight: normal;
+}
+
+#splash > .desc-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--p-small);
+
+  font-size: 10pt;
+  /* background-color: var(--c-main); */
+}
+
+#immersive-splash-area {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  left: 0;
+  top: 0;
+  z-index: 10000;
+
+  width: 100%;
+  height: auto;
+  
+  pointer-events: none;
+}
+
+#immersive-splash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: var(--p-small);
+
+  max-width: 100dvw;
+  min-height: calc(var(--i-menu-size) + 2px + var(--p-small)*2);
+  width: auto;
+  height: auto;
+  
+  /* border: solid 1px var(--c-border); */
+  border-radius: 0 0 12px 12px;
+  background-color: oklch(from var(--c-main) l c h/0.9);
+  box-shadow: var(--op-menu-shadow);
+  backdrop-filter: blur(30px);
+  pointer-events: auto;
+  
+  animation: cubic-bezier(.17, .67, .49, .99) 0.25s ani-splash-in;
+}
+@keyframes ani-splash-in {
+  from {
+    transform: translateY(-10%) scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+#immersive-splash > .app-info {
+  display: flex;
+  align-items: center;
+  padding: var(--p-large);
+  gap: var(--p);
+}
+#immersive-splash > .app-info > .logo {
+  width: 32px;
+  height: 32px;
+
+  background: no-repeat center/100% url("../assets/essentials/logo-black.svg");
+}
+@media (prefers-color-scheme: dark) { #immersive-splash > .app-info > .logo { background-image: url("../assets/essentials/logo-white.svg"); } }
+#immersive-splash > .app-info > p > span {
+  font-size: 10pt;
+  opacity: 0.75;
+}
+
+#immersive-splash > .regulation-alert {
+  padding: var(--p-tiny) var(--p) var(--p) var(--p);
+  
+  font-size: 10pt;
+  opacity: 0.75;
+}
+
+#immersive-splash > .button-area { display: flex; }
+
+#immersive-splash button {
+  padding: unset;
+  justify-content: center;
+  padding: var(--p);
+  
+  min-width: 36px;
+  min-height: 36px;
+  
+  border-radius: 8px;
+  background-color: unset;
+}
+#immersive-splash button:focus { outline: unset; }
+
+@media screen and (max-width: 700px) {
+  #splash-area {
+    padding: 0;
+
+    max-width: 100dvw;
+  }
+
+  #splash {
+    border-left: unset;
+    border-right: unset;
+    border-radius: unset;
+  }
+}
