@@ -1,6 +1,6 @@
-# 트릭컬 테마극장 생성기 개선판 — 공개 데모 준비본
+# 트릭컬 테마극장 생성기 개선판 — 원본 제작자 검토용 데모
 
-원본은 [Acherium의 trickcal-cg-generator](https://github.com/acherium/trickcal-cg-generator)입니다. 이 폴더는 개선판의 정적 웹 실행 파일만 모은 검토용 사본입니다. 원본 제작자의 공개 배포 허락을 확인한 뒤 게시하세요. 원본 저장소에 명시적 LICENSE 파일이 확인되지 않아 이 사본에 임의의 라이선스를 붙이지 않았습니다.
+원본은 [Acherium의 trickcal-cg-generator](https://github.com/acherium/trickcal-cg-generator)입니다. 이 저장소는 원본 제작자에게 개선 내용을 보여주기 위한 시연본입니다. 원본 코드의 권리를 주장하거나 임의의 라이선스를 붙이지 않았습니다.
 
 ## 실행
 
